@@ -117,7 +117,10 @@ module Spree
 				if order.complete?
 					flash.notice = Spree.t(:order_processed_successfully)
 					flash[:commerce_tracking] = "nothing special"
-					redirect_to order_path(order, :token => order.token)
+					
+					# Changing order.token to order.guest_token according to:
+					# https://github.com/spree-contrib/better_spree_paypal_express/issues/115
+					redirect_to order_path(order, :token => order.guest_token)
 				else
 					redirect_to checkout_state_path(order.state)
 				end
