@@ -30,13 +30,18 @@ bundle exec rails g spree_paytrail:install
 ```
 
 1) Go configure the payment methods in Spree Commerce backend.
+
 2) From the PROVIDER dropdown menu choose the Spree::Gateway::PaytrailPayments.
+
 3) From the AUTO CAPTURE dropdown menu choose Yes.
+
 4) Give the payment the name and description you want to.
+
 5) Save the payment gateway settings.
+
 6) Set up the MERCHANT and MERCHANT SECRET and press UPDATE.
 
-For testing use these credentials:
+For testing leave MERCHANT and MERCHANT SECRET empty or set these credentials:
 
 MERCHANT: 13466
 MERCHANT SECRET: 6pKF4jkv97zmqBJ3ZL8gUw5DfT2NMQ
