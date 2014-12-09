@@ -3,7 +3,10 @@ Paytrail payments for Spree Commerce
 
 Unofficial Paytrail payments for Spree Commerce. Doesn't use Connect API.
 
-Should *NOT* be used in production, yet.
+This extension *SHOULD NOT* be used in production. Yet.
+
+The official Paytrail integration guide can be found here:
+http://docs.paytrail.com/en/index-all.html
 
 Installation
 ------------
@@ -25,6 +28,19 @@ Bundle your dependencies and run the installation generator:
 bundle
 bundle exec rails g spree_paytrail:install
 ```
+
+1) Go configure the payment methods in Spree Commerce backend.
+2) From the PROVIDER dropdown menu choose the Spree::Gateway::PaytrailPayments.
+3) From the AUTO CAPTURE dropdown menu choose Yes.
+4) Give the payment the name and description you want to.
+5) Save the payment gateway settings.
+6) Set up the MERCHANT and MERCHANT SECRET and press UPDATE.
+
+For testing use these credentials:
+
+MERCHANT: 13466
+MERCHANT SECRET: 6pKF4jkv97zmqBJ3ZL8gUw5DfT2NMQ
+
 
 Testing
 -------
