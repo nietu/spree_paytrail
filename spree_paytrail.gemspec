@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_paytrail'
-  s.version     = '2.1.3'
+  s.version     = '2.3.0'
   s.summary     = '(Unofficial) Paytrail payments for Spree Commerce'
   s.description = 'The traditional payment methods, not the Paytrail Connect API'
   s.required_ruby_version = '>= 1.9.3'
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency 'spree_core', '~> 2.2.0.beta'
+  s.add_dependency 'spree_core', '~> 2.3'
   s.add_dependency 'httparty'
 
   s.add_development_dependency 'capybara', '~> 2.1'
