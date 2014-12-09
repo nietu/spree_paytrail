@@ -8,10 +8,15 @@ Should *NOT* be used in production, yet.
 Installation
 ------------
 
-Add spree_paytrail to your Gemfile:
+Add spree_paytrail to your Gemfile and use the corresponding branch with your Spree Commerce.
+The latest code goes to the master branch and it should never be used in production.
 
 ```ruby
-gem 'spree_paytrail'
+gem 'spree_paytrail', github: 'vkvelho/spree_paytrail', branch: 'master'
+```
+
+```ruby
+gem 'spree_paytrail', github: 'vkvelho/spree_paytrail', branch: '2-2-stable'
 ```
 
 Bundle your dependencies and run the installation generator:
@@ -23,6 +28,9 @@ bundle exec rails g spree_paytrail:install
 
 Testing
 -------
+
+No tests are made, sorry. To be done. In case tests are made and someone forgot to update this readme...
+
 
 Be sure to bundle your dependencies and then create a dummy test app for the specs to run against.
 
