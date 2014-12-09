@@ -1,7 +1,9 @@
-SpreePaytrail
-=============
+Paytrail payments for Spree Commerce
+====================================
 
-Introduction goes here.
+Unofficial Paytrail payments for Spree Commerce. Doesn't use Connect API.
+
+Should *NOT* be used in production, yet.
 
 Installation
 ------------
@@ -37,4 +39,4 @@ Simply add this require statement to your spec_helper:
 require 'spree_paytrail/factories'
 ```
 
-Copyright (c) 2014 [name of extension creator], released under the New BSD License
+Copyright (c) 2014 Ilkka Sopanen, released under the New BSD License
