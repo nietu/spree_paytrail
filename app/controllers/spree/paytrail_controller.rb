@@ -76,6 +76,7 @@ module Spree
 				unless paytrail_response["errorCode"]
 					redirect_to paytrail_response["url"]
 				else
+					# TODO i18n
 					flash[:error] = "Maksutapa ei toiminut. Paytrail ilmoittaa: #{paytrail_response['errorCode']}"
 					redirect_to checkout_state_path(:payment)
 				end
@@ -128,6 +129,7 @@ module Spree
 		end
 
 		def cancel
+			# TODO i18n
 			flash[:notice] = "Valitsitko väärän maksutavan? Ei hätää, kokeile uudestaan."
 			redirect_to checkout_state_path(current_order.state)
 		end
