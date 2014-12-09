@@ -1,0 +1,6 @@
+<div class='paytrail-warning' style="display:none">
+  <strong><%= Spree.t('no_payment_via_admin_backend', :scope => 'paytrail') %></strong>
+</div>
+<script>
+  SpreePaytrail.paymentMethodID = "<%= payment_method.id %>"
+</script>

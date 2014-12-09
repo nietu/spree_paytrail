@@ -1,0 +1,15 @@
+<fieldset data-hook="paytrail">
+	<legend align="center"><%= Spree.t(:transaction, :scope => :paytrail) %></legend>
+
+	<div class="row">
+		<div class="alpha six columns">
+			<dl>
+				<dt><%= Spree.t(:timestamp, :scope => :paytrail) %>:</dt>
+				<dd><%= payment.source.timestamp %></dd>
+
+				<dt><%= Spree.t(:method, :scope => :paytrail) %>:</dt>
+				<dd><%= payment.source.method %></dd>
+			</dl>
+		</div>
+	</div>
+</fieldset>

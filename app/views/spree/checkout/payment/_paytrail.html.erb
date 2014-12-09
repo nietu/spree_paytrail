@@ -1,0 +1,7 @@
+<p><%= link_to("Maksa tästä", paytrail_payment_url(:payment_method_id => payment_method.id), :method => :post, :id => "paytrail_button") %></p>
+<!-- 
+Embedding can't work here, because we have no token for the payment yet.
+<script type="text/javascript" src="//payment.paytrail.com/js/payment-widget-v1.0.min.js"></script>
+<script type="text/javascript">
+SV.widget.initWithToken('payment', <%= payment_method.id %>, {charset: 'ISO-8859-1'});
+</script> -->
