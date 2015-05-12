@@ -1,8 +1,8 @@
 module Spree
   module PaytrailHelper
 
-    include CheckoutHelper
-    include ActiveMerchant::Billing::Integrations::ActionViewHelper
+    include FrontendHelper
+    #include ActiveMerchant::Billing::Integrations::ActionViewHelper
   end
 end
 
