@@ -1,0 +1,92 @@
+<div class="clear"></div>
+
+<fieldset id='payment' class='paytrail'>
+  <%= render :partial => 'spree/shared/error_messages', :locals => { :target => @order } %>
+
+  <div class="row" data-hook="checkout_header">
+    <h1 class="columns three alpha" data-hook="checkout_title"><%= t(:checkout) %></h1>
+    <div class="columns thirteen omega" data-hook="checkout_progress"><%= checkout_progress %></div>
+  </div>
+
+  <!-- See http://docs.paytrail.fi/fi/index-all.html -->
+   <% payment_service_for @order.number,
+        @shop_merchant,
+        :html => { :id => 'paytrailpayment'},
+        :amount => @order.total, # ei käytetä paytrail tapauksessa
+        :currency => 'EUR',
+        :credential2 => @shop_authcode, # password
+        :service => :paytrail do |service|
+
+      service.customer :first_name => @order.bill_address.firstname,
+          :last_name => @order.bill_address.lastname,
+          :phone => @order.bill_address.phone,
+          :email => @order.email
+      service.billing_address :city => @order.bill_address.city,
+          :address1 => @order.bill_address.address1,
+          :state => "-",
+          :country => @order.bill_address.country.name,
+          :zip => @order.bill_address.zipcode
+
+      # Calculate count of items in order (including adjustments like Shipping)
+      index = 0
+
+      @order.line_items.each do |item|
+        service.add_field "ITEM_TITLE[#{index}]", item.variant.name
+        service.add_field "ITEM_NO[#{index}]", index+1
+        service.add_field "ITEM_AMOUNT[#{index}]", item.quantity
+        service.add_field "ITEM_PRICE[#{index}]", item.price
+        #Due upgrade check this
+        #service.add_field "ITEM_TAX[#{index}]", (Spree::TaxRate.default * 100).to_s
+        service.add_field "ITEM_TAX[#{index}]", "fix me at gem"
+        service.add_field "ITEM_DISCOUNT[#{index}]", "0"
+        service.add_field "ITEM_TYPE[#{index}]", "1"
+        index += 1
+      end # @order.line_items.each_with_index
+
+      # This adjustments code is taken from spree/core/app/views/spree/checkout/_summary.html.erb
+      @order.adjustments.eligible.each do |adjustment|
+        next if (adjustment.originator_type == 'Spree::TaxRate') and (adjustment.amount == 0)
+
+        service.add_field "ITEM_TITLE[#{index}]", adjustment.label
+        service.add_field "ITEM_NO[#{index}]", index+1
+        service.add_field "ITEM_AMOUNT[#{index}]", 1
+        service.add_field "ITEM_PRICE[#{index}]", adjustment.amount
+        service.add_field "ITEM_TAX[#{index}]", (Spree::TaxRate.default * 100).to_s
+        service.add_field "ITEM_DISCOUNT[#{index}]", "0"
+        service.add_field "ITEM_TYPE[#{index}]", "2"
+        index += 1
+      end
+
+      # Set count of items
+      service.items = index
+
+      service.include_vat '1'
+
+      service.return_url main_app.paytrail_success_url(:token => @order.guest_token,
+                                                            :payment_method_id => @payment_method.id)
+      service.notify_url main_app.paytrail_notify_url(:token => @order.guest_token,
+                                                            :payment_method_id => @payment_method.id)
+      service.cancel_return_url main_app.paytrail_cancel_url(:token => @order.guest_token,
+                                                            :payment_method_id => @payment_method.id)
+
+      %>
+      <!-- block for payment_service_for -->
+
+        <fieldset id="order_details">
+          <div class="clear"></div>
+          <legend><%= t(:order_summary) %><%= @order.number %></legend>
+          <%#= render :partial => 'spree/shared/order_details', :locals => {:order => @order} -%>
+        </fieldset>
+      
+	<%= submit_tag t(:confirm_payment) %>
+	<p id="paytrail_description_text"><%= t(:confirm_msg) %></p>
+	<!-- end block for payment_service_for -->
+  <% end %>
+
+  <script type="text/javascript" src="//payment.paytrail.fi/js/payment-widget-v1.0.min.js"></script>
+  <script type="text/javascript">
+  SV.widget.initWithForm('paytrailpayment', {charset:'UTF-8'});
+  </script>
+
+</fieldset>
+

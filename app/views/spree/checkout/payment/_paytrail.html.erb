@@ -1,3 +1,7 @@
+<div id="paytrail_logos">
+        <%= image_tag "https://img.paytrail.com/?id=23904&type=horizontal&cols=12&text=0&auth=245149ada0c533b4" %>
+</div>
+
 <p><%= link_to("Maksa tästä", paytrail_payment_url(:payment_method_id => payment_method.id), :method => :post, :id => "paytrail_button") %></p>
 <!-- 
 Embedding can't work here, because we have no token for the payment yet.

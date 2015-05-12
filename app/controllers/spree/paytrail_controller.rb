@@ -65,7 +65,7 @@ module Spree
 				:headers => {
 					'Content-Type' => 'application/json',
 					'Accept' => 'application/json',
-					'X-Verkkomaksut-Api-Version' => '1'
+					'X-Paytrail-Api-Version' => '1'
 				}
 			}
 

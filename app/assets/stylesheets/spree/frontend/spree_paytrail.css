@@ -1,3 +1,24 @@
 /*
  *= require spree/frontend
 */
+
+/* paytrail/show/ */
+#paytrail_logos {
+  margin-bottom: 20px;
+}
+#paytrail_description_text {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+h1.page-title {
+    font-family: 'LEHN183', cursive;
+    font-size: 48px;
+    color: #888888;
+    position: relative;
+    left: 20px;
+    margin-bottom: 10px;
+    img {
+        margin-right: 10px;
+    }
+}
