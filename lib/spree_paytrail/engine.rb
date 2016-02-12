@@ -18,6 +18,10 @@ module SpreePaytrail
     end
 
     config.to_prepare &method(:activate).to_proc
+    
+    # supported by paytrail da_DK, de_DE, et_EE, en_US, fr_FR, no_NO, ru_RU, fi_FI ja sv_SE
+    # keep this in sync with SpreeI18n::Config.available_locales in application intializer
+    config.paytrail_locales = {'en-GB' => 'en_US', 'sv-SE' => 'sv_SE', 'fi' => 'fi_FI', 'de' => 'de_DE'}
 
     initializer "spree.paytrail.payment_methods", :after => "spree.register.payment_methods" do |app|
       app.config.spree.payment_methods << Spree::Gateway::PaytrailPayments

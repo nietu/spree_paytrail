@@ -2,4 +2,10 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  spree:
+    paytrail:
+      method: "Payment method"
+      timestamp: "Payment timestamp"
+      paytrail_notification: "Payment declined. Paytrail informs: "
+      payment_cancel: "Did you select wrong payment method? No worries, please try again."
+      payment_error: "Could not connect to Paytrail."

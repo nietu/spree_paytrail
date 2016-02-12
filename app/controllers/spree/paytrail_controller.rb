@@ -29,13 +29,14 @@ module Spree
 			request_body = {
 			  :"orderNumber" => order.number,
 			  :"currency" => order.currency,
-			  :"locale" => "fi_FI",
+			  :"locale" => Rails.configuration.paytrail_locales["#{I18n.locale}"] || "en_US",
 			  :"urlSet" => {
 			    :"success" => confirm_paytrail_url(:payment_method_id => params[:payment_method_id], :utm_nooverride => 1),
 			    :"failure" => cancel_paytrail_url,
 			    :"pending" => "",
 			    :"notification" => notify_paytrail_url
 			  },
+			  :"type" => "E1",
 			  :"orderDetails" => {
 			    :"includeVat" => "1",
 			    :"contact" => {
@@ -72,34 +73,27 @@ module Spree
 			begin
 				require 'httparty'
 				paytrail_response = HTTParty.post('https://payment.paytrail.com/api-payment/create', options)
-
 				unless paytrail_response["errorCode"]
 					redirect_to paytrail_response["url"]
 				else
-					# TODO i18n
-					flash[:error] = "Maksutapa ei toiminut. Paytrail ilmoittaa: #{paytrail_response['errorCode']}"
+					flash[:error] = Spree.t(:paytrail_notification, :scope => :paytrail) + "#{paytrail_response['errorCode']}"
 					redirect_to checkout_state_path(:payment)
 				end
 			rescue SocketError
-				flash[:error] = "Could not connect to Paytrail."
+				flash[:error] = Spree.t(:payment_error, :scope => :paytrail)
 				redirect_to checkout_state_path(:payment)
 			end
 		end
 
 		def confirm
 			order = current_order || raise(ActiveRecord::RecordNotFound)
-			md5_fingerprint = Digest::MD5.hexdigest([
-				payment_method.preferred_merchant_secret,
-				payment_method.preferred_merchant_id,
-				order.number
-			].join('&')).upcase
-
+			
 			calculated_md5 = Digest::MD5.hexdigest([
 				params["ORDER_NUMBER"],
 				params["TIMESTAMP"],
 				params["PAID"],
 				params["METHOD"],
-				payment_method.preferred_merchant_secret
+				payment_method.preferred_merchant_secret.present? ? payment_method.preferred_merchant_secret : '6pKF4jkv97zmqBJ3ZL8gUw5DfT2NMQ'
 			].join('|')).upcase
 
 			if calculated_md5 == params["RETURN_AUTHCODE"]
@@ -116,7 +110,6 @@ module Spree
 				order.next
 				if order.complete?
 					flash.notice = Spree.t(:order_processed_successfully)
-					flash[:commerce_tracking] = "nothing special"
 					
 					# Changing order.token to order.guest_token according to:
 					# https://github.com/spree-contrib/better_spree_paypal_express/issues/115
@@ -125,15 +118,14 @@ module Spree
 					redirect_to checkout_state_path(order.state)
 				end
 			else
-				flash[:notice] = "Now this is strange. Something called 'authcode' isn't what we expect. We expected to get #{calculated_md5}, but we got #{params['RETURN_AUTHCODE']}"
+				flash[:notice] = "This is strange. Something called 'authcode' isn't what we expect. We expected to get #{calculated_md5}, but we got #{params['RETURN_AUTHCODE']}"
 				redirect_to checkout_state_path(order.state)
 			end
 
 		end
 
 		def cancel
-			# TODO i18n
-			flash[:notice] = "Valitsitko väärän maksutavan? Ei hätää, kokeile uudestaan."
+			flash[:notice] = Spree.t(:payment_cancel, :scope => :paytrail)
 			redirect_to checkout_state_path(current_order.state)
 		end
 
@@ -150,23 +142,32 @@ module Spree
 		end
 
 		def paytrail_method_in_words(identifier)
-			method_ids = [
-				{ identifier: '1', title: 'Nordea' },
-				{ identifier: '2', title: 'Osuuspankki' },
-				{ identifier: '3', title: 'Sampo Pankki' },
-				{ identifier: '4', title: 'Tapiola' },
-				{ identifier: '5', title: 'Ålandsbanken' },
-				{ identifier: '6', title: 'Handelsbanken' },
-				{ identifier: '7', title: 'Säästöpankit, paikallisosuuspankit, Aktia, Nooa' },
-				{ identifier: '8', title: 'Luottokunta' },
-				{ identifier: '9', title: 'Paypal' },
-				{ identifier: '10', title: 'S-Pankki' },
-				{ identifier: '11', title: 'Klarna, Laskulla' },
-				{ identifier: '12', title: 'Klarna, Osamaksulla' },
-				{ identifier: '13', title: 'Collector (poistunut marraskuussa 2012. Uusi Collector = 19)' },
-				{ identifier: '18', title: 'Joustoraha' },
-				{ identifier: '19', title: 'Collector' }
-			]
+      method_ids = [
+        { identifier: '1',  title: 'Nordea' },
+        { identifier: '2',  title: 'Osuuspankki' },
+        { identifier: '3',  title: 'Danske Bank' },
+        { identifier: '5',  title: 'Ålandsbanken' },
+        { identifier: '6',  title: 'Handelsbanken' },
+        { identifier: '9',  title: 'Paypal' },
+        { identifier: '10', title: 'S-Pankki' },
+        { identifier: '11', title: 'Klarna, Laskulla' },
+        { identifier: '12', title: 'Klarna, Osamaksulla' },
+        { identifier: '18', title: 'Jousto' },
+        { identifier: '19', title: 'Collector' },
+        { identifier: '30', title: 'Visa' },
+        { identifier: '31', title: 'MasterCard' },
+        { identifier: '34', title: 'Diners Club' },
+        { identifier: '35', title: 'JCB' },
+        { identifier: '36', title: 'Paytrail-tili' },
+        { identifier: '50', title: 'Aktia' },
+        { identifier: '51', title: 'POP Pankki' },
+        { identifier: '52', title: 'Säästöpankki' },
+        { identifier: '53', title: 'Visa (Nets)' },
+        { identifier: '54', title: 'MasterCard (Nets)' },
+        { identifier: '55', title: 'Diners Club (Nets)' },
+        { identifier: '56', title: 'American Express (Nets)' },
+        { identifier: '57', title: 'Maestro (Nets)' }
+      ]
 
 			correct_method = method_ids.find { |m| m[:identifier] == identifier.to_s }
 
