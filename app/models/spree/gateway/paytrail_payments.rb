@@ -7,6 +7,12 @@ module Spree
 			true
 		end
 
+    def cancel(source)
+      # TODO: this should use the `refund` method, but it needs some work.
+      # Doing nothing for now to prevent an error and allow orders to be cancelled.
+      OpenStruct.new(success?:true,warning:'Paytrail refund method not implemented, make sure payments are cancelled manually')
+    end
+
 		def provider_class
 			ActiveMerchant::Billing::Integrations::Verkkomaksut
 		end
