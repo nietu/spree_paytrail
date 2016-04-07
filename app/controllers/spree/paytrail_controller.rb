@@ -50,7 +50,7 @@ module Spree
 			        :"street" => order.billing_address.address1,
 			        :"postalCode" => order.billing_address.zipcode,
 			        :"postalOffice" => order.billing_address.city,
-			        :"country" => order.billing_address.country.iso
+			        :"country" => order.billing_address.country.iso_name
 			      }
 			    },
 			    :"products" => paytrail_line_items
