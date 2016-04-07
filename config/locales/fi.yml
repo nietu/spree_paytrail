@@ -8,4 +8,5 @@ fi:
       timestamp: "Maksun aikaleima"
       paytrail_notification: "Maksutapa ei toiminut. Paytrail ilmoittaa: "
       payment_cancel: "Valitsitko väärän maksutavan? Ei hätää, kokeile uudestaan."
-      payment_error: "Yhteyttä Paytrailiin ei saada."      
+      payment_error: "Yhteyttä Paytrailiin ei saada."
+      pay_now: "Maksa tästä"      

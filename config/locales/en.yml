@@ -9,3 +9,4 @@ en:
       paytrail_notification: "Payment declined. Paytrail informs: "
       payment_cancel: "Did you select wrong payment method? No worries, please try again."
       payment_error: "Could not connect to Paytrail."
+      pay_now: "Pay from here"      
